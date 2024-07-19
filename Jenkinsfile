@@ -1,37 +1,34 @@
 pipeline {
     agent any
-
+    environment {
+        DOCKER_IMAGE = 'awfusy/test'
+    }
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
-
-                sh 'git log HEAD^..HEAD --pretty="%h %an - %s" > GIT_CHANGES'
-                def lastChanges = readFile('GIT_CHANGES')
+                git 'https://github.com/awfusy/test-Jenkins.git'
             }
         }
-
+        stage('Build') {
+            steps {
+                script {
+                    docker.build("${env.DOCKER_IMAGE}:latest")
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'docker run --rm ${env.DOCKER_IMAGE}:latest python manage.py test'
+            }
+        }
         stage('Deploy') {
             steps {
-                sh './jenkins_deploy_prod_docker.sh'
+                script {
+                    docker.withRegistry('', 'dockerhub-credentials') {
+                        docker.image("${env.DOCKER_IMAGE}:latest").push()
+                    }
+                }
             }
-        }
-
-        stage('Publish results') {
-            steps {
-                echo "Deployment successful"
-            }
-        }
-    }
-
-    post {
-        success {
-            echo "Build successful"
-            // You can add additional steps here, like running tests or notifications.
-        }
-
-        failure {
-            echo "Build failed"
         }
     }
 }
