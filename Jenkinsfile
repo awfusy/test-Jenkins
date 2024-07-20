@@ -19,8 +19,10 @@ pipeline {
         }
         stage('Test') {
              steps {
-                // Use Bash shell explicitly
-                sh 'bash -c "docker run --rm ${env.DOCKER_IMAGE}:latest python manage.py test"'
+                script {
+                    sh 'docker-compose build'
+                    // sh 'docker-compose run web python manage.py test --noinput'
+                }
             }
         }
         stage('Deploy') {
