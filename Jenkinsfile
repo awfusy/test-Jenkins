@@ -21,6 +21,7 @@ pipeline {
             steps {
                 script {
                     // Use Docker Compose to start services and run tests
+                    //? ???
                     sh '''
                     docker-compose up -d
                     docker-compose exec web bash -c "python manage.py migrate && python manage.py test"
