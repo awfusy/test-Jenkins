@@ -27,7 +27,11 @@ pipeline {
                     echo "Containers started"
                     docker-compose ps
                     echo "Running migrations and tests"
-                    docker-compose exec web bash -c "python manage.py migrate && python manage.py test"
+                    if ! docker-compose exec web bash -c "python manage.py migrate && python manage.py test"; then
+                        echo "Tests failed. Capturing logs..."
+                        docker-compose logs web
+                        exit 1
+                    fi
                     docker-compose down
                     '''
                 }
@@ -36,7 +40,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('', 'dockerhub-credentials') {
+                    docker.withRegistry('', '5d627d43-bd15-4cfc-909d-c6974e338438') {
                         docker.image("${env.DOCKER_IMAGE}:latest").push()
                     }
                 }
