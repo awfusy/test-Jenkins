@@ -20,7 +20,7 @@ pipeline {
         stage('Test') {
             steps {
                 // Use Bash shell explicitly
-                sh 'dash -c "docker run --rm ${env.DOCKER_IMAGE}:latest python manage.py test"'
+                sh 'bash -c "docker run --rm ${env.DOCKER_IMAGE}:latest python manage.py test"'
             }
         }
         stage('Deploy') {
