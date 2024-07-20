@@ -12,7 +12,7 @@ then
 fi
 
 # Execute Django commands
-python manage.py makemigrations testweb_ssd
+python manage.py makemigrations
 python manage.py migrate
 
 exec "$@"
