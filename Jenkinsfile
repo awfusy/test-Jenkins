@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: "${env.GITHUB_REPO}", branch: 'master'
+                git url: "${env.GITHUB_REPO}", branch: 'main'
             }
         }
         stage('Build Docker Image') {
@@ -19,7 +19,8 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'docker run --rm ${env.DOCKER_IMAGE}:latest python manage.py test'
+                // Use Bash shell explicitly
+                sh 'bash -c "docker run --rm ${env.DOCKER_IMAGE}:latest python manage.py test"'
             }
         }
         stage('Deploy') {
