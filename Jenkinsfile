@@ -5,38 +5,9 @@ pipeline {
         GITHUB_REPO = 'https://github.com/awfusy/test-Jenkins.git'
     }
     stages {
-        stage('Setup Docker Environment') {
-            steps {
-                script {
-                    // Ensure Docker is installed (if needed)
-                    sh '''
-                    if ! command -v docker &> /dev/null
-                    then
-                        apt-get update
-                        apt-get install -y docker.io
-                    fi
-                    '''
-
-                    // Ensure Jenkins user is part of the Docker group
-                    sh '''
-                    if ! groups jenkins | grep &>/dev/null '\bdocker\b'; then
-                        usermod -aG docker jenkins
-                    fi
-                    '''
-
-                    // Ensure Docker socket has correct permissions
-                    sh '''
-                    if [ $(stat -c %G /var/run/docker.sock) != "docker" ]; then
-                        chown root:docker /var/run/docker.sock
-                        chmod 660 /var/run/docker.sock
-                    fi
-                    '''
-                }
-            }
-        }
         stage('Clone Repository') {
             steps {
-                git url: "${env.GITHUB_REPO}", branch: 'main'
+                git url: "${env.GITHUB_REPO}", branch: 'master'
             }
         }
         stage('Build Docker Image') {
