@@ -1,6 +1,7 @@
 #!/bin/sh
 
 if [ "$DATABASE" = "mysql" ]
+then
   # Wait for MySQL to be ready
   while ! nc -z db 3306; do
     echo "Waiting for MySQL..."
