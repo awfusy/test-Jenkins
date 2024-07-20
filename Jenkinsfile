@@ -21,9 +21,12 @@ pipeline {
             steps {
                 script {
                     // Use Docker Compose to start services and run tests
-                    //? ???
                     sh '''
+                    set -e
                     docker-compose up -d
+                    echo "Containers started"
+                    docker-compose ps
+                    echo "Running migrations and tests"
                     docker-compose exec web bash -c "python manage.py migrate && python manage.py test"
                     docker-compose down
                     '''
@@ -33,7 +36,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('', '5d627d43-bd15-4cfc-909d-c6974e338438') {
+                    docker.withRegistry('', 'dockerhub-credentials') {
                         docker.image("${env.DOCKER_IMAGE}:latest").push()
                     }
                 }
