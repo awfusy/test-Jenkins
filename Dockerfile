@@ -35,4 +35,4 @@ COPY testWeb/entrypoint.sh /entrypoint.sh
 # Make sure the script is executable
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -22,7 +22,7 @@ pipeline {
                  script {
                     sh 'docker-compose up -d'
                     sh 'docker-compose ps'
-                    sh 'curl -f http://localhost:8001'  // Update to new port
+                    sh 'curl -f http://localhost:8000'  // Update to new port
                 }
             }
         }
