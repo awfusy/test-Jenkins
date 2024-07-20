@@ -19,10 +19,23 @@ pipeline {
         }
         stage('Test') {
             steps {
-                 script {
-                    sh 'docker-compose up -d'
-                    sh 'docker-compose ps'
-                    sh 'curl -f http://localhost:8000'  // Update to new port
+                script {
+                    // Use Docker Compose to start services and run tests
+                    sh '''
+                    set -e
+                    docker-compose up -d
+                    echo "Containers started"
+                    docker-compose ps
+                    echo "Listing directory contents"
+                    docker-compose exec web ls -la /app/testWeb
+                    echo "Running migrations and tests"
+                    if ! docker-compose exec web bash -c "python manage.py migrate && python manage.py test"; then
+                        echo "Tests failed. Capturing logs..."
+                        docker-compose logs web
+                        exit 1
+                    fi
+                    docker-compose down
+                    '''
                 }
             }
         }
