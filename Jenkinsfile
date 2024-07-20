@@ -19,8 +19,11 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // Use Bash shell explicitly
-                sh 'bash -c "docker run --rm ${env.DOCKER_IMAGE}:latest python manage.py test"'
+                // Ensure to use bash explicitly
+                sh '''
+                    #!/bin/bash
+                    docker run --rm ${DOCKER_IMAGE}:latest python manage.py test
+                '''
             }
         }
         stage('Deploy') {
