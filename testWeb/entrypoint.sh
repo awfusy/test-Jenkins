@@ -1,14 +1,13 @@
 #!/bin/sh
 
 if [ "$DATABASE" = "mysql" ]
-then
-    echo "Waiting for mysql..."
+  # Wait for MySQL to be ready
+  while ! nc -z db 3306; do
+    echo "Waiting for MySQL..."
+    sleep 1
+  done
+  echo "MySQL started"
 
-    while ! nc -z $SQL_HOST $SQL_PORT; do
-      sleep 0.1
-    done
-
-    echo "MySQL started"
 fi
 
 # Execute Django commands
