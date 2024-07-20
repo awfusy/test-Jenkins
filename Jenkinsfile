@@ -26,11 +26,9 @@ pipeline {
                     docker-compose up -d
                     echo "Containers started"
                     docker-compose ps
+                    echo "Listing directory contents"
+                    docker-compose exec web ls -la /app/testWeb
                     echo "Running migrations and tests"
-                    if ! docker-compose exec web bash -c "ls -la /app/testWeb"; then
-                        echo "Directory listing failed"
-                        exit 1
-                    fi
                     if ! docker-compose exec web bash -c "python manage.py migrate && python manage.py test"; then
                         echo "Tests failed. Capturing logs..."
                         docker-compose logs web
