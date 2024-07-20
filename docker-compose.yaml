@@ -14,6 +14,10 @@ services:
       - "3307:3306"
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
 
   web:
     build: .
@@ -23,7 +27,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DJANGO_SETTINGS_MODULE=testWeb.settings
       - SQL_ENGINE=django.db.backends.mysql

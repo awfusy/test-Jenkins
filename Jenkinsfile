@@ -19,17 +19,20 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // Ensure to use bash explicitly
-                sh '''
-                    #!/bin/bash
-                    docker run --rm ${DOCKER_IMAGE}:latest python manage.py test
-                '''
+                script {
+                    // Use Docker Compose to start services and run tests
+                    sh '''
+                    docker-compose up -d
+                    docker-compose exec web bash -c "python manage.py migrate && python manage.py test"
+                    docker-compose down
+                    '''
+                }
             }
         }
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('', 'dockerhub-credentials') {
+                    docker.withRegistry('', '5d627d43-bd15-4cfc-909d-c6974e338438') {
                         docker.image("${env.DOCKER_IMAGE}:latest").push()
                     }
                 }
