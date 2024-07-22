@@ -21,16 +21,14 @@ pipeline {
              steps {
                 script {
                     sh 'docker-compose build'
-                    // sh 'docker-compose run web python manage.py test --noinput'
+
                 }
             }
         }
         stage('Deploy') {
             steps {
                 script {
-                    docker.withRegistry('', '5d627d43-bd15-4cfc-909d-c6974e338438') {
-                        docker.image("${env.DOCKER_IMAGE}:latest").push()
-                    }
+                     sh 'docker-compose build'
                 }
             }
         }
